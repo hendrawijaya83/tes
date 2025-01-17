@@ -13,9 +13,9 @@ INSERT INTO tbltargetrayon VALUES ('medan', '2', 2000, '20250101','2025010123110
 INSERT INTO tbltargetrayon VALUES ('medan', '3', 3000, '20250101','20250101230102');
 INSERT INTO tbltargetrayon VALUES ('aceh', '4', 500, '20250101','20250101230101');
 
-
-" (select k.* from (select idrayon,idtarget,tgltarget,nilai as target,editdate from tbltargetrayon " & strDateFilter & ") as k " & _
-        " inner join ( select m.idrayon,m.targetmax,max(editdate) as editdatemax from " & _
-        " (select idrayon, max(tgltarget) over (partition by idrayon order by idrayon,editdate) as targetmax,editdate from tbltargetrayon " & _
-        strDateFilter & ") m group by m.idrayon,m.targetmax) as l " & _
-        " on k.idrayon=l.idrayon and k.tgltarget=l.targetmax and k.editdate=l.editdatemax) y 
+select k.* from (select idrayon,idtarget,tgltarget,nilai as target,editdate from tbltargetrayon) as k 
+    inner join ( select m.idrayon, n.tgltarget, max(n.editdate) as editdatemax from 
+  (select idrayon, max(tgltarget) as targetmax from tbltargetrayon group by idrayon) m inner join
+    (select idrayon, tgltarget, editdate from tbltargetrayon) n on m.idrayon=n.idrayon and m.targetmax=n.tgltarget 
+    group by m.idrayon, n.tgltarget) as l 
+    on k.idrayon=l.idrayon and k.tgltarget=l.tgltarget and k.editdate=l.editdatemax
